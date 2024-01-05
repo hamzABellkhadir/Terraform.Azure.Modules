@@ -68,7 +68,7 @@ data "azurerm_subnet" "subnet" {
 
 
 resource "azurerm_public_ip" "public_ip" {
-  for_each            = toset(is_public_ip_enabled ? ["enabled"] : [])
+  for_each            = toset( var.is_public_ip_enabled ? ["enabled"] : [])
   name                = "publicip-${var.vm_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -90,7 +90,7 @@ resource "azurerm_network_interface" "nic" {
     subnet_id                     = data.azurerm_subnet.subnet.id
     private_ip_address_allocation = var.is_dynamic_ip_enabled ? "Dynamic" : "Static"
     private_ip_address            = var.is_dynamic_ip_enabled ? null : var.private_ip_address
-    public_ip_address_id          = is_public_ip_enabled ? azurerm_public_ip.public_ip["enabled"].id : null
+    public_ip_address_id          = var.is_public_ip_enabled ? azurerm_public_ip.public_ip["enabled"].id : null
   }
 
   lifecycle {
@@ -168,7 +168,7 @@ module "install_apache2" {
   count                = var.is_apache2_config_enabled == true ? 1 : 0
   source               = "./modules/ansible"
   static_web_path      = var.static_web_path
-  ansible_vm_ip        = zurerm_network_interface.nic.private_ip_address
+  ansible_vm_ip        = azurerm_network_interface.nic.private_ip_address
   admin_agent_password = random_password.pass.result
   admin_agent_username = var.admin_username
   depends_on           = [azurerm_linux_virtual_machine.vm]

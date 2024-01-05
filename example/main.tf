@@ -1,3 +1,4 @@
+# Define required Terraform version and providers
 terraform {
   required_providers {
     azurerm = {
@@ -8,6 +9,7 @@ terraform {
   required_version = ">= 1.5"
 }
 
+# Configure Azure provider
 provider "azurerm" {
   subscription_id            = var.subscription_id
   tenant_id                  = var.tenant_id
@@ -15,6 +17,7 @@ provider "azurerm" {
   features {}
 }
 
+# Create an Azure Application Security Group
 resource "azurerm_application_security_group" "asg" {
   name                = var.asg_name
   location            = var.location
@@ -25,6 +28,7 @@ resource "azurerm_application_security_group" "asg" {
   }
 }
 
+# Use a Terraform module to create a virtual network
 module "vnet" {
   source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/vnet"
   name                = var.vnet_name
@@ -42,6 +46,7 @@ module "vnet" {
   ]
 }
 
+# Use a Terraform module to create a network security group (NSG)
 module "nsg" {
   source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/nsg"
   name                = var.nsg_name
@@ -79,7 +84,7 @@ module "nsg" {
   depends_on = [module.vnet]
 }
 
-
+# Use a Terraform module to create a Linux virtual machine
 module "vmlinux" {
   source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/vm.linux"
   vm_name             = var.vm_name

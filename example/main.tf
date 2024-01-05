@@ -91,6 +91,6 @@ module "vmlinux" {
   asg_enabled         = true
   asg_id              = azurerm_application_security_group.asg.id
 
-  static_web_path = "/home/hamza/terraform/index.html"
+  static_web_path = "${abspath(path.module)}/index.html"
   depends_on      = [module.vnet]
 }

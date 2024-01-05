@@ -53,4 +53,5 @@ resource "null_resource" "execute_playbook" {
     command     = "cd ${path.module}/playbook && chmod +x playbook.sh && ./playbook.sh"
     interpreter = ["bash", "-c"]
   }
+  depends_on = [local_file.host_ini , local_file.script_ansible_ini]
 }

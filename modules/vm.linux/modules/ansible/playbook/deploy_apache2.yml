@@ -1,6 +1,6 @@
 ---
 - name: Deploy Static Page to Apache2
-  hosts: your_ubuntu_server
+  hosts: all
   become: true
 
   tasks:

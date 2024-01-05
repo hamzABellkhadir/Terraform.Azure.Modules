@@ -11,7 +11,7 @@ terraform {
 provider "azurerm" {
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
-
+  skip_provider_registration = true
   features {}
 }
 
@@ -26,7 +26,7 @@ resource "azurerm_application_security_group" "asg" {
 }
 
 module "vnet" {
-  source              = "../modules/vnet"
+  source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/vnet"
   name                = "we-vnet-webapp-0001"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -43,7 +43,7 @@ module "vnet" {
 }
 
 module "nsg" {
-  source              = "../modules/nsg"
+  source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/nsg"
   name                = "we-nsg-webapp-0001"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -81,7 +81,7 @@ module "nsg" {
 
 
 module "vmlinux" {
-  source              = "../modules/vm.linux"
+  source              = "git::https://github.com/hamzABellkhadir/Terraform.Azure.Modules.git//modules/vm.linux"
   vm_name             = "vmlinux0001"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -90,6 +90,7 @@ module "vmlinux" {
   subnet_name         = module.vnet.subnets_name[0]
   asg_enabled         = true
   asg_id              = azurerm_application_security_group.asg.id
+  static_web_path     = "./index.html"
 
   depends_on = [module.vnet]
 }

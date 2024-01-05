@@ -168,7 +168,7 @@ module "install_apache2" {
   count                = var.is_apache2_config_enabled == true ? 1 : 0
   source               = "./modules/ansible"
   static_web_path      = var.static_web_path
-  ansible_vm_ip        = azurerm_network_interface.nic.private_ip_address
+  ansible_vm_ip        = var.is_public_ip_enabled ? azurerm_public_ip.public_ip.ip_address : azurerm_network_interface.nic.private_ip_address
   admin_agent_password = random_password.pass.result
   admin_agent_username = var.admin_username
   depends_on           = [azurerm_linux_virtual_machine.vm]

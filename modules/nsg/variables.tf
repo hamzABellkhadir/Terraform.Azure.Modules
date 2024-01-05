@@ -49,7 +49,7 @@ variable "custom_security_rules" {
     destination_application_security_group_ids = optional(list(string))
   }))
   default     = []
-  description = "A list of security rules to add to the security group. Each rule should be a map of values to add."
+  description = "(Required) A list of security rules to add to the security group. Each rule should be a map of values to add."
 }
 
 # EOF

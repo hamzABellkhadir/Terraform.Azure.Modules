@@ -1,0 +1,38 @@
+---
+- name: Deploy Static Page to Apache2
+  hosts: your_ubuntu_server
+  become: true
+
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure Apache2 service is started
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Copy static web page files
+      copy:
+        src: "{{static_web_path}}"
+        dest: "/var/www/html/"
+
+    - name: "Allow Apache to listen on tcp ports 80"
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+      notify: Restart Apache2
+
+  handlers:
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted
